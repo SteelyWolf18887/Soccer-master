@@ -15,7 +15,8 @@ import java.util.*;
 public class SoccerDatabase implements SoccerDB {
 
     // dummied up variable; you will need to change this
-    private Hashtable <String, SoccerPlayer> PlayerTable = new Hashtable<>();
+    private Hashtable<String, SoccerPlayer> PlayerTable = new Hashtable<>();
+
     /**
      * add a player
      *
@@ -25,15 +26,15 @@ public class SoccerDatabase implements SoccerDB {
     public boolean addPlayer(String firstName, String lastName,
                              int uniformNumber, String teamName) {
         String playerName = firstName + " " + lastName;
-        if(PlayerTable.get(playerName) == null) {
+        if (PlayerTable.get(playerName) == null) {
             SoccerPlayer player = new SoccerPlayer(firstName, lastName, uniformNumber, teamName);
             PlayerTable.put(playerName, player);
             return true;
-        }else{
+        } else {
             return false;
         }
 
-        }
+    }
 
     /**
      * remove a player
@@ -43,10 +44,10 @@ public class SoccerDatabase implements SoccerDB {
     @Override
     public boolean removePlayer(String firstName, String lastName) {
         String playerName = firstName + " " + lastName;
-        if(PlayerTable.containsKey(playerName)) {
+        if (PlayerTable.containsKey(playerName)) {
             PlayerTable.remove(playerName);
             return true;
-        }else{
+        } else {
             return false;
         }
 
@@ -60,9 +61,9 @@ public class SoccerDatabase implements SoccerDB {
     @Override
     public SoccerPlayer getPlayer(String firstName, String lastName) {
         String playerName = firstName + " " + lastName;
-        if(PlayerTable.get(playerName) != null) {
+        if (PlayerTable.get(playerName) != null) {
             return PlayerTable.get(playerName);
-        }else{
+        } else {
             return null;
         }
     }
@@ -83,21 +84,21 @@ public class SoccerDatabase implements SoccerDB {
         }
     }
 
-        /**
-         * increment a player's yellow cards
-         *
-         * @see SoccerDB#bumpYellowCards(String, String)
-         */
-        @Override
-        public boolean bumpYellowCards (String firstName, String lastName){
-            String playerName = firstName + " " + lastName;
-            if (PlayerTable.containsKey(playerName)) {
-                (PlayerTable.get(playerName)).bumpYellowCards();
-                return true;
-            } else {
-                return false;
-            }
+    /**
+     * increment a player's yellow cards
+     *
+     * @see SoccerDB#bumpYellowCards(String, String)
+     */
+    @Override
+    public boolean bumpYellowCards(String firstName, String lastName) {
+        String playerName = firstName + " " + lastName;
+        if (PlayerTable.containsKey(playerName)) {
+            (PlayerTable.get(playerName)).bumpYellowCards();
+            return true;
+        } else {
+            return false;
         }
+    }
 
     /**
      * increment a player's red cards
@@ -123,7 +124,17 @@ public class SoccerDatabase implements SoccerDB {
     @Override
     // report number of players on a given team (or all players, if null)
     public int numPlayers(String teamName) {
-        return -1;
+        if (teamName == null) {
+            return PlayerTable.size();
+        } else {
+            int playerCount = 0;
+            for (SoccerPlayer player : PlayerTable.values()) {
+                if ((player.getTeamName()).equals(teamName)) {
+                    playerCount++;
+                }
+            }
+            return playerCount;
+        }
     }
 
     /**
@@ -134,7 +145,10 @@ public class SoccerDatabase implements SoccerDB {
     // get the nTH player
     @Override
     public SoccerPlayer playerIndex(int idx, String teamName) {
-        return null;
+        if(idx > numPlayers((teamName))){
+           return null;
+        }
+
     }
 
     /**

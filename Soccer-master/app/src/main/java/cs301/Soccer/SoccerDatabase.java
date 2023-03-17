@@ -26,12 +26,12 @@ public class SoccerDatabase implements SoccerDB {
                              int uniformNumber, String teamName) {
         String playerName = firstName + " " + lastName;
         if(PlayerTable.get(playerName) == null) {
-            return false;
-        }else{
             SoccerPlayer player = new SoccerPlayer(firstName, lastName, uniformNumber, teamName);
             PlayerTable.put(playerName, player);
             return true;
-            }
+        }else{
+            return false;
+        }
 
         }
 
@@ -52,7 +52,12 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public SoccerPlayer getPlayer(String firstName, String lastName) {
-        return null;
+        String playerName = firstName + " " + lastName;
+        if(PlayerTable.get(playerName) != null) {
+            return PlayerTable.get(playerName);
+        }else{
+            return null;
+        }
     }
 
     /**

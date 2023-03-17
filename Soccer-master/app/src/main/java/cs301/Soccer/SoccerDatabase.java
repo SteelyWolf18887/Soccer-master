@@ -15,8 +15,7 @@ import java.util.*;
 public class SoccerDatabase implements SoccerDB {
 
     // dummied up variable; you will need to change this
-    private Hashtable database;
-
+    private Hashtable <String, SoccerPlayer> PlayerTable = new Hashtable<>();
     /**
      * add a player
      *
@@ -25,8 +24,16 @@ public class SoccerDatabase implements SoccerDB {
     @Override
     public boolean addPlayer(String firstName, String lastName,
                              int uniformNumber, String teamName) {
-        return false;
-    }
+        String playerName = firstName + " " + lastName;
+        if(PlayerTable.get(playerName) == null) {
+            return false;
+        }else{
+            SoccerPlayer player = new SoccerPlayer(firstName, lastName, uniformNumber, teamName);
+            PlayerTable.put(playerName, player);
+            return true;
+            }
+
+        }
 
     /**
      * remove a player
@@ -148,8 +155,8 @@ public class SoccerDatabase implements SoccerDB {
      * this is faster than restarting the app
      */
     public boolean clear() {
-        if(database != null) {
-            database.clear();
+        if(PlayerTable != null) {
+            PlayerTable.clear();
             return true;
         }
         return false;

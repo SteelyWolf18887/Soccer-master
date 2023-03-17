@@ -74,18 +74,30 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpGoals(String firstName, String lastName) {
-        return false;
+        String playerName = firstName + " " + lastName;
+        if (PlayerTable.containsKey(playerName)) {
+            (PlayerTable.get(playerName)).bumpGoals();
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    /**
-     * increment a player's yellow cards
-     *
-     * @see SoccerDB#bumpYellowCards(String, String)
-     */
-    @Override
-    public boolean bumpYellowCards(String firstName, String lastName) {
-        return false;
-    }
+        /**
+         * increment a player's yellow cards
+         *
+         * @see SoccerDB#bumpYellowCards(String, String)
+         */
+        @Override
+        public boolean bumpYellowCards (String firstName, String lastName){
+            String playerName = firstName + " " + lastName;
+            if (PlayerTable.containsKey(playerName)) {
+                (PlayerTable.get(playerName)).bumpYellowCards();
+                return true;
+            } else {
+                return false;
+            }
+        }
 
     /**
      * increment a player's red cards
@@ -94,7 +106,13 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpRedCards(String firstName, String lastName) {
-        return false;
+        String playerName = firstName + " " + lastName;
+        if (PlayerTable.containsKey(playerName)) {
+            (PlayerTable.get(playerName)).bumpRedCards();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

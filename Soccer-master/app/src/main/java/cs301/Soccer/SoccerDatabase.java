@@ -3,6 +3,8 @@ package cs301.Soccer;
 import android.util.Log;
 import cs301.Soccer.soccerPlayer.SoccerPlayer;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -145,10 +147,16 @@ public class SoccerDatabase implements SoccerDB {
     // get the nTH player
     @Override
     public SoccerPlayer playerIndex(int idx, String teamName) {
-        if(idx > numPlayers((teamName))){
-           return null;
+        int counter = 0;
+        for(SoccerPlayer player : PlayerTable.values()) {
+            if((teamName == null || player.getTeamName().equals(teamName))){
+                if(counter == idx){
+                    return player;
+                }
+                counter++;
+            }
         }
-
+        return null;
     }
 
     /**
@@ -159,8 +167,50 @@ public class SoccerDatabase implements SoccerDB {
     // read data from file
     @Override
     public boolean readData(File file) {
-        return file.exists();
-    }
+        Scanner sn = null;
+
+        try{
+            sn = new Scanner(file);
+        } catch(FileNotFoundException e){
+            e.printStackTrace();
+            return false;
+        }
+
+        while (sn.hasNextLine()) {
+            String firstName = sn.nextLine();
+            String teamName = sn.nextLine();
+            String lastName = sn.nextLine();
+            int jersey = sn.nextInt();
+            int goals = sn.nextInt();
+            int redCards = sn.nextInt();
+            int yellowCards = sn.nextInt();
+
+            String player = firstName + "#" + lastName;
+            if (PlayerTable.containsKey(player)) {
+                PlayerTable.remove(player);
+            }
+
+            SoccerPlayer player1 = new SoccerPlayer(firstName, lastName, jersey, teamName);
+
+            for (int i = 0; i < goals; i++) {
+                player1.bumpGoals();
+            }
+
+            for (int i = 0; i < yellowCards; i++) {
+                player1.bumpYellowCards();
+            }
+
+            for (int i = 0; -i < redCards; i++) {
+                player1.bumpRedCards();
+            }
+
+            PlayerTable.put(player, player1);
+            sn.nextLine();
+            }
+
+            sn.close();
+        return true;
+        }
 
     /**
      * write database data to a file
@@ -170,7 +220,24 @@ public class SoccerDatabase implements SoccerDB {
     // write data to file
     @Override
     public boolean writeData(File file) {
-        return false;
+        try {
+            PrintWriter printWriter = new PrintWriter(file);
+            for(SoccerPlayer player : PlayerTable.values()) {
+                printWriter.println(logString(player.getFirstName()));
+                printWriter.println(logString(player.getLastName()));
+                printWriter.println(logString(player.getTeamName()));
+                printWriter.println(Integer.toString(player.getUniform()));
+                printWriter.println(Integer.toString(player.getGoals()));
+                printWriter.println(Integer.toString(player.getYellowCards()));
+                printWriter.println(Integer.toString(player.getRedCards()));
+            }
+            printWriter.close();
+            return true;
+        }
+        catch(FileNotFoundException e){
+            Log.e("Soccer","error");
+            return false;
+        }
     }
 
     /**
@@ -191,7 +258,13 @@ public class SoccerDatabase implements SoccerDB {
     // return list of teams
     @Override
     public HashSet<String> getTeams() {
-        return new HashSet<String>();
+       HashSet<String> listT = new HashSet<>();
+       for(SoccerPlayer player : PlayerTable.values()){
+           if(!listT.contains(player.getTeamName())){
+               listT.add(player.getTeamName());
+           }
+       }
+       return listT;
     }
 
     /**
